@@ -70,6 +70,19 @@ export default function Authenticated({ user, header, children }) {
                 </NavLink>
               </div>
 
+              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <NavLink
+                  href={route("projects.index")}
+                  active={
+                    route().current("projects.index") ||
+                    route().current("projects.create") ||
+                    route().current("projects.edit")
+                  }
+                >
+                  Projects
+                </NavLink>
+              </div>
+
               {user.roles.includes("Permissions") && user.id === 3 && (
                 <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                   <NavLink
@@ -212,6 +225,17 @@ export default function Authenticated({ user, header, children }) {
               }
             >
               Fuel
+            </ResponsiveNavLink>
+
+            <ResponsiveNavLink
+              href={route("projects.index")}
+              active={
+                route().current("projects.index") ||
+                route().current("projects.create") ||
+                route().current("projects.edit")
+              }
+            >
+              Projects
             </ResponsiveNavLink>
 
             {user.roles.includes("Permissions") && user.id === 3 && (

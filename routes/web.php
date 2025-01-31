@@ -12,6 +12,7 @@ use App\Http\Controllers\FuelController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\ProductionByWeightController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Middleware\EnsureStaticTokenIsValid;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('measurement', MeasurementController::class);
   Route::resource('production-by-weight', ProductionByWeightController::class);
   Route::resource('fuel', FuelController::class);
+  Route::resource('projects', ProjectsController::class);
   Route::resource('permission', ApprovalController::class);
 
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
