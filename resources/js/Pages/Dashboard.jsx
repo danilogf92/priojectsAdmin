@@ -6,14 +6,7 @@ import ContainerAuth from "@/Components/MyComponents/ContainerAuth";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Dashboard({
-  auth,
-  summary,
-  summary2,
-  chartData,
-  lastMonthData,
-  total,
-}) {
+export default function Dashboard({ auth }) {
   const functionChangeData = (data) => {
     console.log(data);
   };
@@ -31,7 +24,7 @@ export default function Dashboard({
 
       <ContainerAuth>
         <div className="mx-auto max-w-screen-lg">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {summary.map((item, index) => (
               <CardUsageExample
                 key={index}
@@ -39,10 +32,10 @@ export default function Dashboard({
                 value={item.total_difference}
               />
             ))}
-          </div>
+          </div> */}
         </div>
 
-        {total.length > 0 && (
+        {/* {total.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-2 py-4">
             {total.map((item, index) => (
               <ChartResume
@@ -53,18 +46,18 @@ export default function Dashboard({
               />
             ))}
           </div>
-        )}
+        )} */}
 
-        <div className="grid grid-cols-1 bg-slate-50 shadow-lg p-1 rounded-md mt-2">
+        {/* <div className="grid grid-cols-1 bg-slate-50 shadow-lg p-1 rounded-md mt-2">
           <AreaChartHero chartdata={lastMonthData} />
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 bg-slate-50 shadow-lg p-1 rounded-md mt-2">
+        {/* <div className="grid grid-cols-1 bg-slate-50 shadow-lg p-1 rounded-md mt-2">
           <BarChartHero
             chartdata={chartData}
             functionChangeData={functionChangeData}
           />
-        </div>
+        </div> */}
 
         {/* <pre>{JSON.stringify(total, undefined, 2)}</pre> */}
         {/* <pre>{JSON.stringify(summary, undefined, 2)}</pre> */}

@@ -15,26 +15,6 @@ class Plant extends Model
     'city'
   ];
 
-  public function meters()
-  {
-    return $this->hasMany(Meter::class, 'plant_id');
-  }
-
-  public function measurements()
-  {
-    return $this->hasMany(Measurement::class, 'name_id');
-  }
-
-  public function fuelTypes()
-  {
-    return $this->hasMany(FuelEquipment::class, 'type_fuel_id');
-  }
-
-  public function fuel()
-  {
-    return $this->hasMany(Fuel::class, 'plant_id');
-  }
-
   public function approvals()
   {
     return $this->hasMany(Approval::class);

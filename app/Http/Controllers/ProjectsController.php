@@ -11,7 +11,6 @@ use App\Models\Justification;
 use App\Models\Plant;
 use App\Models\Project;
 use App\Models\State;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

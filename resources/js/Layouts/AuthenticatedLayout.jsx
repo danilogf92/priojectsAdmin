@@ -33,53 +33,29 @@ export default function Authenticated({ user, header, children }) {
 
               <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <NavLink
-                  href={route("measurement.index")}
-                  active={
-                    route().current("measurement.index") ||
-                    route().current("measurement.create") ||
-                    route().current("measurement.edit")
-                  }
-                >
-                  Water
-                </NavLink>
-              </div>
-
-              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <NavLink
-                  href={route("production-by-weight.index")}
-                  active={
-                    route().current("production-by-weight.index") ||
-                    route().current("production-by-weight.create") ||
-                    route().current("production-by-weight.edit")
-                  }
-                >
-                  Production
-                </NavLink>
-              </div>
-
-              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <NavLink
-                  href={route("fuel.index")}
-                  active={
-                    route().current("fuel.index") ||
-                    route().current("fuel.create") ||
-                    route().current("fuel.edit")
-                  }
-                >
-                  Fuel
-                </NavLink>
-              </div>
-
-              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                <NavLink
                   href={route("projects.index")}
                   active={
                     route().current("projects.index") ||
                     route().current("projects.create") ||
-                    route().current("projects.edit")
+                    route().current("projects.edit") ||
+                    route().current("projects.show")
                   }
                 >
                   Projects
+                </NavLink>
+              </div>
+
+              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <NavLink
+                  href={route("data.index")}
+                  active={
+                    route().current("data.index") ||
+                    route().current("data.create") ||
+                    route().current("data.edit") ||
+                    route().current("data.show")
+                  }
+                >
+                  Data
                 </NavLink>
               </div>
 
@@ -195,39 +171,6 @@ export default function Authenticated({ user, header, children }) {
             </ResponsiveNavLink>
 
             <ResponsiveNavLink
-              href={route("measurement.index")}
-              active={
-                route().current("measurement.index") ||
-                route().current("measurement.create") ||
-                route().current("measurement.edit")
-              }
-            >
-              Water
-            </ResponsiveNavLink>
-
-            <ResponsiveNavLink
-              href={route("production-by-weight.index")}
-              active={
-                route().current("production-by-weight.index") ||
-                route().current("production-by-weight.create") ||
-                route().current("production-by-weight.edit")
-              }
-            >
-              Production
-            </ResponsiveNavLink>
-
-            <ResponsiveNavLink
-              href={route("fuel.index")}
-              active={
-                route().current("fuel.index") ||
-                route().current("fuel.create") ||
-                route().current("fuel.edit")
-              }
-            >
-              Fuel
-            </ResponsiveNavLink>
-
-            <ResponsiveNavLink
               href={route("projects.index")}
               active={
                 route().current("projects.index") ||
@@ -236,6 +179,17 @@ export default function Authenticated({ user, header, children }) {
               }
             >
               Projects
+            </ResponsiveNavLink>
+
+            <ResponsiveNavLink
+              href={route("data.index")}
+              active={
+                route().current("data.index") ||
+                route().current("data.create") ||
+                route().current("data.edit")
+              }
+            >
+              Data
             </ResponsiveNavLink>
 
             {user.roles.includes("Permissions") && user.id === 3 && (

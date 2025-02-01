@@ -1,4 +1,3 @@
-// pages/Projects/Index.jsx
 import React, { useEffect, useState } from "react";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -10,8 +9,6 @@ import SuccessMessage from "@/Components/project/SuccessMessage";
 import FilterForm from "@/Components/project/FilterForm";
 import ProjectsTable from "@/Components/project/ProjectsTable";
 import DeleteModal from "@/Components/project/DeleteModal";
-
-import { setAllFieldsToNull } from "@/utils/functions";
 
 const ROWS = 10;
 
@@ -33,13 +30,14 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
-        setAllFieldsToNull(flash);
+        flash.success = null;
+        flash.error = null;
       }, 3000);
     }
   }, [flash]);
 
   const deleteProject = (project) => {
-    router.delete(route("projects.destroy", project.id), {
+    router.delete(route("data.destroy", project.id), {
       onSuccess: () => {
         setShowSuccess(true);
 
@@ -53,7 +51,7 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
     router.get(
-      route("projects.index"),
+      route("data.index"),
       { ...filters, [name]: value },
       { preserveState: true, replace: true }
     );
@@ -61,7 +59,7 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
 
   const clearFilter = () => {
     setFilters({ date: "", plant_id: "", rows: ROWS });
-    router.get(route("projects.index"));
+    router.get(route("data.index"));
   };
 
   return (
@@ -70,12 +68,12 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Projects
+            Data
           </h2>
           {(auth.user.roles.includes("Project") ||
             auth.user.permissions.includes("Create Project")) && (
             <Link
-              href={route("projects.create")}
+              href={route("data.create")}
               className="bg-emerald-500 py-2 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
             >
               New Project
@@ -84,7 +82,7 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
         </div>
       }
     >
-      <Head title="Projects" />
+      <Head title="Data" />
       <ContainerAuth>
         {showSuccess && (
           <SuccessMessage

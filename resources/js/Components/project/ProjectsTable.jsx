@@ -62,8 +62,14 @@ export default function ProjectsTable({
               } border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}
             >
               <td className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                {project.name}
+                <Link
+                  className="font-medium text-amber-600 dark:text-amber-500 hover:underline mr-4"
+                  href={route("projects.show", project.id)}
+                >
+                  {project.name}
+                </Link>
               </td>
+
               <td className="px-6 py-2">{project.code}</td>
               <td className="px-6 py-2">{project.file}</td>
               <td className="px-6 py-2">{project.rate}</td>
