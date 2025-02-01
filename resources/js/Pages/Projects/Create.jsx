@@ -1,25 +1,46 @@
-import FormMeters from "@/Components/FormMeters";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+// pages/Projects/Create.jsx
+import React from "react";
 import { Head, Link } from "@inertiajs/react";
-// import { HomeIcon } from "heroicons/react/solid";
-import { ArrowLongLeftIcon } from "@heroicons/react/24/solid";
-import Container from "@/Components/Container";
-import { data } from "autoprefixer";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import CreateProjectForm from "@/Components/project/CreateProjectForm";
 
-export default function Create({ auth, plants, meters }) {
+export default function Create({
+  auth,
+  plants,
+  currentUser, // Usuario actual
+  states,
+  justifications,
+  investments,
+  classifications,
+}) {
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-          New Measure
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            Create Project
+          </h2>
+          <Link
+            href={route("projects.index")}
+            className="bg-gray-500 py-2 px-3 text-white rounded shadow transition-all hover:bg-gray-600"
+          >
+            Back to Projects
+          </Link>
+        </div>
       }
     >
-      <Head title="Meters" />
-      <Container route={route("measurement.index")} buttonText="Before">
-        <FormMeters plants={plants} meters={meters} />
-      </Container>
+      <Head title="Create Project" />
+      <div className="p-6 bg-white shadow-md rounded-lg">
+        <CreateProjectForm
+          plants={plants}
+          currentUser={currentUser} // Pasar el usuario actual al formulario
+          states={states}
+          justifications={justifications}
+          investments={investments}
+          classifications={classifications}
+        />
+      </div>
     </AuthenticatedLayout>
   );
 }

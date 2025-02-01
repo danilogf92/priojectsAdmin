@@ -1,27 +1,48 @@
-import Container from "@/Components/Container";
-import FormMetersEdit from "@/Components/FormMetersEdit";
+// pages/Projects/Edit.jsx
+import React from "react";
+import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import EditProjectForm from "@/Components/project/EditProjectForm";
 
-export default function Edit({ auth, plants, meters, measurement }) {
+export default function Edit({
+  auth,
+  project,
+  plants,
+  currentUser,
+  states,
+  justifications,
+  investments,
+  classifications,
+}) {
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-          Edit Measurement
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            Edit Project
+          </h2>
+          <Link
+            href={route("projects.index")}
+            className="bg-gray-500 py-2 px-3 text-white rounded shadow transition-all hover:bg-gray-600"
+          >
+            Back to Projects
+          </Link>
+        </div>
       }
     >
-      <Head title="Meters" />
-
-      <Container route={route("measurement.index")} buttonText="Before">
-        <FormMetersEdit
+      <Head title="Edit Project" />
+      <div className="p-6 bg-white shadow-md rounded-lg">
+        <EditProjectForm
+          project={project}
           plants={plants}
-          meters={meters}
-          measurement={measurement}
+          currentUser={currentUser}
+          states={states}
+          justifications={justifications}
+          investments={investments}
+          classifications={classifications}
         />
-      </Container>
+      </div>
     </AuthenticatedLayout>
   );
 }
