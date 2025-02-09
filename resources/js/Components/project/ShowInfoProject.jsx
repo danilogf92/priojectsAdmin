@@ -1,4 +1,6 @@
 import React from "react";
+import ImportExcelData from "./ImportExcelData";
+import DeleteExcelData from "./DeleteExcelData";
 
 export const ShowInfoProject = ({ project }) => {
   return (
@@ -9,8 +11,14 @@ export const ShowInfoProject = ({ project }) => {
           <strong>PDA Code:</strong> {project.code}
         </p>
         <p>
-          <strong>File:</strong> {project.file}
+          <strong>File:</strong>
         </p>
+        {Boolean(project.file) ? (
+          <DeleteExcelData project={project} />
+        ) : (
+          <ImportExcelData project={project} />
+        )}
+
         <p>
           <strong>Rate:</strong> {project.rate}
         </p>
@@ -39,6 +47,8 @@ export const ShowInfoProject = ({ project }) => {
           <strong>Finish Date:</strong> {project.finish_date}
         </p>
       </div>
+
+      {/* <pre>{JSON.stringify(project, undefined, 2)}</pre> */}
     </>
   );
 };

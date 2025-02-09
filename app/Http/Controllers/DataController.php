@@ -18,8 +18,8 @@ class DataController extends Controller
 
         // Definir los filtros dinámicos
         $filters = [
-        'date' => 'start_date',   // Filtra por fecha
-        'plant_id' => 'plant_id', // Filtra por planta
+        'area' => 'area',   // Filtra por fecha
+        'project_id' => 'project_id', // Filtra por planta
         ];
 
         // Aplicar filtros dinámicamente
@@ -29,12 +29,12 @@ class DataController extends Controller
         $rowsPerPage = $request->input('rows', $ROWS);
 
         if ($rowsPerPage === 'all') {
-        $projects = $query->orderBy('start_date', 'DESC')
-            ->orderBy('plant_id', 'ASC')
+        $data = $query->orderBy('area', 'DESC')
+            ->orderBy('project_id', 'ASC')
             ->get();
         } else {
-        $projects = $query->orderBy('start_date', 'DESC')
-            ->orderBy('plant_id', 'ASC')
+        $data = $query->orderBy('area', 'DESC')
+            ->orderBy('project_id', 'ASC')
             ->paginate((int)$rowsPerPage);
         }
 
@@ -42,7 +42,7 @@ class DataController extends Controller
         $plants = Plant::orderBy('name', 'ASC')->get();
 
         return inertia('Data/Index', [
-        "projects" => DataResource::collection($projects),
+        "data" => DataResource::collection($data),
         "plants" => $plants,
         'queryParams' => request()->query() ?: null,
         ]);

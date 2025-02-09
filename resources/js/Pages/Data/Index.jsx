@@ -7,31 +7,31 @@ import { NoContent } from "@/Components/MyComponents/NoContent";
 import Pagination from "@/Components/Pagination";
 import SuccessMessage from "@/Components/project/SuccessMessage";
 import FilterForm from "@/Components/project/FilterForm";
-import ProjectsTable from "@/Components/project/ProjectsTable";
 import DeleteModal from "@/Components/project/DeleteModal";
+import { setAllFieldsToNull } from "@/utils/functions";
+import DataTable from "@/Components/data/DataTable";
 
 const ROWS = 10;
 
-export default function Index({ auth, projects, queryParams = null, plants }) {
+export default function Index({ auth, data, queryParams = null, plants }) {
   queryParams = queryParams || {};
   const { flash } = usePage().props;
   const [showSuccess, setShowSuccess] = useState(false);
   const [filters, setFilters] = useState({
-    date: queryParams.date || "",
-    plant_id: queryParams.plant_id || "",
+    area: queryParams.area || "",
+    project_id: queryParams.project_id || "",
     rows: queryParams.rows || ROWS,
   });
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectToDelete, setDataToDelete] = useState(null);
 
   useEffect(() => {
     if (flash.success) {
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
-        flash.success = null;
-        flash.error = null;
+        setAllFieldsToNull(flash);
       }, 3000);
     }
   }, [flash]);
@@ -58,7 +58,7 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
   };
 
   const clearFilter = () => {
-    setFilters({ date: "", plant_id: "", rows: ROWS });
+    setFilters({ area: "", project_id: "", rows: ROWS });
     router.get(route("data.index"));
   };
 
@@ -91,7 +91,7 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
           />
         )}
 
-        {projects.data.length > 0 ? (
+        {data.data.length > 0 ? (
           <>
             <FilterForm
               filters={filters}
@@ -100,10 +100,10 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
               clearFilter={clearFilter}
             />
 
-            <ProjectsTable
-              projects={projects}
+            <DataTable
+              data={data.data}
               auth={auth}
-              setProjectToDelete={setProjectToDelete}
+              setDataToDelete={setDataToDelete}
               setIsDeleteModalOpen={setIsDeleteModalOpen}
             />
             <DeleteModal
@@ -111,14 +111,14 @@ export default function Index({ auth, projects, queryParams = null, plants }) {
               onClose={() => setIsDeleteModalOpen(false)}
               onDelete={() => deleteProject(projectToDelete)}
             />
-            <Pagination links={projects.meta.links} filters={filters} />
+            <Pagination links={data.meta.links} filters={filters} />
           </>
         ) : (
           <NoContent text="No Content" icon="🛢" />
         )}
       </ContainerAuth>
 
-      <pre>{JSON.stringify(flash, undefined, 2)}</pre>
+      {/* <pre>{JSON.stringify(data.data, undefined, 2)}</pre> */}
     </AuthenticatedLayout>
   );
 }

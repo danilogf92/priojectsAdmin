@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Resources\DataResource;
 use App\Http\Resources\ProjectResource;
 use App\Models\Classification;
+use App\Models\Data;
 use App\Models\Investment;
 use App\Models\Justification;
 use App\Models\Plant;
 use App\Models\Project;
 use App\Models\State;
+use App\Services\ProjectDashboard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -108,12 +111,31 @@ class ProjectsController extends Controller
   /**
    * Display the specified resource.
    */
-    public function show(Project $project)
-    {
-        return inertia('Projects/Show', [
-            'project' => new ProjectResource($project),
-        ]);
+public function show(Project $project, Request $request)
+{
+    $ROWS = 10;
+
+    // Determinar número de filas por página
+    $rowsPerPage = $request->input('rows', $ROWS);
+
+    // Consulta para filtrar por project_id y aplicar paginación
+    $query = Data::where('project_id', $project->id);
+
+    if ($rowsPerPage === 'all') {
+        $data = $query->orderBy('area', 'DESC')->get();
+    } else {
+        $data = $query->orderBy('area', 'DESC')->paginate((int)$rowsPerPage);
     }
+    
+    $dashboard = new ProjectDashboard(Data::where('project_id', $project->id));
+
+    return inertia('Projects/Show', [
+        'project' => new ProjectResource($project),
+        'data' => DataResource::collection($data), // Los datos de la página actual
+        'queryParams' => request()->query() ?: null, // Parámetros de la consulta
+        'dashboard' => $dashboard->getDashboardData(), // Items para el dashboard
+    ]);
+}
 
   /**
    * Show the form for editing the specified resource.

@@ -5,6 +5,7 @@ use App\Http\Controllers\API\PowerBiController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\DataImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Middleware\EnsureStaticTokenIsValid;
@@ -28,6 +29,9 @@ Route::middleware(['auth'])->group(function () {
   Route::prefix('api')->group(function () {
     Route::get('/plants', [PlantController::class, 'index']);
   });
+
+  Route::post('/import/data', [DataImportController::class, 'import'])->name('import.import');
+  Route::delete('/import/{project}', [DataImportController::class, 'delete'])->name('import.delete');
 
   Route::get('/approval/{id}/export', [ApprovalController::class, 'export'])->name('approval.export');
   Route::get('/approval/{id}/alturas', [ApprovalController::class, 'alturas'])->name('approval.alturas');
