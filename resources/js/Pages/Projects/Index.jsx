@@ -1,9 +1,7 @@
-// pages/Projects/Index.jsx
 import React, { useEffect, useState } from "react";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import ContainerAuth from "@/Components/MyComponents/ContainerAuth";
-import ExportButton from "@/Components/MyComponents/ExportButton";
 import { NoContent } from "@/Components/MyComponents/NoContent";
 import Pagination from "@/Components/Pagination";
 import SuccessMessage from "@/Components/project/SuccessMessage";

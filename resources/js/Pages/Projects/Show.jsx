@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { ShowInfoProject } from "@/Components/project/ShowInfoProject";
 import DataTable from "@/Components/data/DataTable";
 import Pagination from "@/Components/Pagination";
 import TabButton from "@/Components/MyComponents/TabButton";
 import ProjectDashboard from "@/Components/project/ProjectDashboard";
+import DashboardFilters from "@/Components/project/DashboardFilters"; // Importa el nuevo componente
 
 const ROWS = 10;
 
@@ -15,14 +16,56 @@ export default function Show({
   data,
   queryParams = null,
   dashboard,
+  chart,
+  chart2,
+  resume,
+  resumePercentage,
+  accountBalanceRealValue,
+  accountBalanceBookedValue,
 }) {
   queryParams = queryParams || {};
   const { flash } = usePage().props;
+
+  // Estado para los filtros
   const [filters, setFilters] = useState({
-    area: queryParams.area || "",
-    project_id: queryParams.project_id || "",
+    type: queryParams.type || "area",
+    investments: queryParams.investments || "global_price_euros",
+    currency: queryParams.currency || "euro",
     rows: queryParams.rows || ROWS,
   });
+
+  // Función para manejar cambios en los filtros
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    const newFilters = { ...filters, [name]: value }; // Actualiza el estado local
+    setFilters(newFilters);
+
+    // Actualiza la URL con los nuevos filtros
+    router.get(
+      route("projects.show", project.data.id),
+      { ...newFilters }, // Envía todos los filtros actualizados
+      { preserveState: true, replace: true }
+    );
+    console.log("change");
+  };
+
+  // Función para limpiar los filtros
+  const clearFilter = () => {
+    const defaultFilters = {
+      type: "area",
+      investments: "global_price_euros",
+      currency: "euro",
+      rows: ROWS,
+    };
+    setFilters(defaultFilters);
+
+    // Actualiza la URL sin filtros
+    router.get(
+      route("projects.show", project.data.id),
+      { ...filters }, // Envía los filtros predeterminados
+      { preserveState: true, replace: true }
+    );
+  };
 
   // Estado para controlar la pestaña activa
   const [activeTab, setActiveTab] = useState("data");
@@ -41,16 +84,21 @@ export default function Show({
     <AuthenticatedLayout
       user={auth.user}
       header={
-        <div className="flex justify-between items-center">
-          <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {`Project ${project.data.name}`}
+        <div>
+          <div className="flex justify-between items-center">
+            <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+              {`${project.data.name}`}
+            </h2>
+            <Link
+              href={route("projects.index")}
+              className="bg-gray-500 py-2 px-3 text-white rounded shadow transition-all hover:bg-gray-600"
+            >
+              Back to Projects
+            </Link>
+          </div>
+          <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight text-start">
+            {`${project.data.code}`}
           </h2>
-          <Link
-            href={route("projects.index")}
-            className="bg-gray-500 py-2 px-3 text-white rounded shadow transition-all hover:bg-gray-600"
-          >
-            Back to Projects
-          </Link>
         </div>
       }
     >
@@ -102,11 +150,30 @@ export default function Show({
               <Pagination links={data.meta.links} filters={filters} />
             </div>
           )}
-          {activeTab === "dashboard" && <div></div>}
+          {activeTab === "dashboard" && (
+            <div>
+              <ProjectDashboard
+                dashboardItems={dashboard}
+                stackedData={chart}
+                stackedData2={chart2}
+                resume={resume}
+                resumePercentage={resumePercentage}
+                accountBalanceRealValue={accountBalanceRealValue}
+                accountBalanceBookedValue={accountBalanceBookedValue}
+              >
+                <DashboardFilters
+                  filters={filters}
+                  handleFilterChange={handleFilterChange}
+                  clearFilter={clearFilter}
+                />
+              </ProjectDashboard>
+            </div>
+          )}
         </div>
-        <ProjectDashboard dashboardItems={dashboard} />
-        <pre>{JSON.stringify(dashboard, undefined, 2)}</pre>
+        {/* <pre>{JSON.stringify(accountBalanceRealValue, undefined, 2)}</pre> */}
+        {/* <pre>{JSON.stringify(resume, undefined, 2)}</pre> */}
         {/* <pre>{JSON.stringify(filters, undefined, 2)}</pre> */}
+        {/* <pre>{JSON.stringify(dashboard, undefined, 2)}</pre> */}
       </div>
     </AuthenticatedLayout>
   );

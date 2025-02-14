@@ -16,6 +16,7 @@ use App\Models\State;
 use App\Services\ProjectDashboard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectsController extends Controller
 {
@@ -62,31 +63,31 @@ class ProjectsController extends Controller
    */
   public function create()
   {
-      // Verificar permisos
-      $permissions = Auth::user()->getPermissionNames();
+    // Verificar permisos
+    $permissions = Auth::user()->getPermissionNames();
 
-      if (!$permissions->contains('Create Project')) {
-          abort(403, 'Unauthorized action.');
-      }
+    if (!$permissions->contains('Create Project')) {
+      abort(403, 'Unauthorized action.');
+    }
 
-      // Obtener el usuario actual
-      $currentUser = Auth::user();
+    // Obtener el usuario actual
+    $currentUser = Auth::user();
 
-      // Obtener datos necesarios
-      $plants = Plant::all();
-      $states = State::all();
-      $justifications = Justification::all();
-      $investments = Investment::all();
-      $classifications = Classification::all();
+    // Obtener datos necesarios
+    $plants = Plant::all();
+    $states = State::all();
+    $justifications = Justification::all();
+    $investments = Investment::all();
+    $classifications = Classification::all();
 
-      return inertia('Projects/Create', [
-          'plants' => $plants,
-          'currentUser' => $currentUser, // Pasar el usuario actual
-          'states' => $states,
-          'justifications' => $justifications,
-          'investments' => $investments,
-          'classifications' => $classifications,
-      ]);
+    return inertia('Projects/Create', [
+      'plants' => $plants,
+      'currentUser' => $currentUser, // Pasar el usuario actual
+      'states' => $states,
+      'justifications' => $justifications,
+      'investments' => $investments,
+      'classifications' => $classifications,
+    ]);
   }
 
   /**
@@ -94,88 +95,88 @@ class ProjectsController extends Controller
    */
   public function store(StoreProjectRequest $request)
   {
-      // Verificar permisos
-      $permissions = Auth::user()->getPermissionNames();
+    // Verificar permisos
+    $permissions = Auth::user()->getPermissionNames();
 
-      if (!$permissions->contains('Create Project')) {
-          abort(403, 'Unauthorized action test.');
-      }
+    if (!$permissions->contains('Create Project')) {
+      abort(403, 'Unauthorized action test.');
+    }
 
-      // Crear el proyecto con los datos validados
-      $project = Project::create($request->validated());
+    // Crear el proyecto con los datos validados
+    $project = Project::create($request->validated());
 
-      // Redirigir con mensaje de éxito
-      return redirect()->route('projects.index')->with('success', 'Project created successfully.');
+    // Redirigir con mensaje de éxito
+    return redirect()->route('projects.index')->with('success', 'Project created successfully.');
   }
 
   /**
    * Display the specified resource.
    */
-public function show(Project $project, Request $request)
-{
+  public function show(Project $project, Request $request)
+  {
     $ROWS = 10;
 
-    // Determinar número de filas por página
     $rowsPerPage = $request->input('rows', $ROWS);
 
-    // Consulta para filtrar por project_id y aplicar paginación
+    // Consulta de datos
     $query = Data::where('project_id', $project->id);
+    $data = $query->orderBy('area', 'DESC')->paginate((int) $rowsPerPage);
 
-    if ($rowsPerPage === 'all') {
-        $data = $query->orderBy('area', 'DESC')->get();
-    } else {
-        $data = $query->orderBy('area', 'DESC')->paginate((int)$rowsPerPage);
-    }
-    
-    $dashboard = new ProjectDashboard(Data::where('project_id', $project->id));
+    $dashboard = new ProjectDashboard(Data::where('project_id', $project->id), $request);
 
     return inertia('Projects/Show', [
-        'project' => new ProjectResource($project),
-        'data' => DataResource::collection($data), // Los datos de la página actual
-        'queryParams' => request()->query() ?: null, // Parámetros de la consulta
-        'dashboard' => $dashboard->getDashboardData(), // Items para el dashboard
+      'project' => new ProjectResource($project),
+      'data' => DataResource::collection($data),
+      'queryParams' => $request->query() ?: null,
+      'dashboard' => $dashboard->getDashboardData(),
+      'chart' => $dashboard->barChart(),
+      'chart2' => $dashboard->getFormattedChartData(),
+      'resume' => $dashboard->getResume(),
+      'resumePercentage' => $dashboard->getResumePercentage(),
+      'accountBalanceRealValue' => $dashboard->accountBalanceRealValue(),
+      'accountBalanceBookedValue' => $dashboard->accountBalanceBookedValue(),
     ]);
-}
+  }
 
   /**
    * Show the form for editing the specified resource.
    */
   public function edit(Project $project)
   {
-      // Verificar permisos
-      $permissions = Auth::user()->getPermissionNames();
+    // Verificar permisos
+    $permissions = Auth::user()->getPermissionNames();
 
-      if (!$permissions->contains('Edit Project')) {
-          abort(403, 'Unauthorized action.');
-      }
+    if (!$permissions->contains('Edit Project')) {
+      abort(403, 'Unauthorized action.');
+    }
 
-      // Obtener datos necesarios
-      $plants = Plant::all();
-      $states = State::all();
-      $justifications = Justification::all();
-      $investments = Investment::all();
-      $classifications = Classification::all();
+    // Obtener datos necesarios
+    $plants = Plant::all();
+    $states = State::all();
+    $justifications = Justification::all();
+    $investments = Investment::all();
+    $classifications = Classification::all();
 
-      return inertia('Projects/Edit', [
-          'project' => $project,
-          'plants' => $plants,
-          'currentUser' => Auth::user(),
-          'states' => $states,
-          'justifications' => $justifications,
-          'investments' => $investments,
-          'classifications' => $classifications,
-      ]);
+    return inertia('Projects/Edit', [
+      'project' => $project,
+      'plants' => $plants,
+      'currentUser' => Auth::user(),
+      'states' => $states,
+      'justifications' => $justifications,
+      'investments' => $investments,
+      'classifications' => $classifications,
+    ]);
   }
 
   /**
    * Update the specified resource in storage.
    */
-    public function update(UpdateProjectRequest $request, Project $project)
-    {
-        $project->update($request->validated());
+  public function update(UpdateProjectRequest $request, Project $project)
+  {
+    $project->update($request->validated());
 
-        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
-    }
+    return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
+  }
 
   /**
    * Remove the specified resource from storage.
